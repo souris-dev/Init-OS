@@ -53,11 +53,11 @@ static void scroll()
 }
 
 // Writes a single character out to the screen.
-void monitor_put(char c)
+void monitor_put(char c,u8int bgcolor,u8int fgcolor,int x,int y)
 {
     // The background colour is black (0), the foreground is white (15).
-    u8int backColour = 0;
-    u8int foreColour = 15;
+    u8int backColour = bgcolor;
+    u8int foreColour = fgcolor;
 
     // The attribute byte is made up of two nibbles - the lower being the 
     // foreground colour, and the upper the background colour.
@@ -135,20 +135,20 @@ void monitor_clear()
 }
 
 // Outputs a null-terminated ASCII string to the monitor.
-void monitor_write(char *c)
+void monitor_write(char *c,u8int bgcolor,u8int fgcolor,int x,int y)
 {
     int i = 0;
     while (c[i])
     {
-        monitor_put(c[i++]);
+        monitor_put(c[i++],bgcolor,fgcolor,x, y);
     }
 }
 
-void monitor_write_hex(u32int n)
+void monitor_write_hex(u32int n,u8int bgcolor,u8int fgcolor,int x,int y)
 {
     s32int tmp;
 
-    monitor_write("0x");
+    monitor_write("0x",bgcolor,fgcolor, x, y);
 
     char noZeroes = 1;
 
@@ -164,33 +164,33 @@ void monitor_write_hex(u32int n)
         if (tmp >= 0xA)
         {
             noZeroes = 0;
-            monitor_put (tmp-0xA+'a' );
+            monitor_put (tmp-0xA+'a' ,bgcolor, fgcolor,x,y);
         }
         else
         {
             noZeroes = 0;
-            monitor_put( tmp+'0' );
+            monitor_put( tmp+'0', bgcolor,fgcolor, x, y );
         }
     }
   
     tmp = n & 0xF;
     if (tmp >= 0xA)
     {
-        monitor_put (tmp-0xA+'a');
+        monitor_put (tmp-0xA+'a',bgcolor,fgcolor,x, y);
     }
     else
     {
-        monitor_put (tmp+'0');
+        monitor_put (tmp+'0',bgcolor,fgcolor,x, y);
     }
 
 }
 
-void monitor_write_dec(u32int n)
+void monitor_write_dec(u32int n,u8int bgcolor,u8int fgcolor,int x,int y)
 {
 
     if (n == 0)
     {
-        monitor_put('0');
+        monitor_put('0',bgcolor,fgcolor,x, y);
         return;
     }
 
@@ -212,6 +212,15 @@ void monitor_write_dec(u32int n)
     {
         c2[i--] = c[j++];
     }
-    monitor_write(c2);
+    monitor_write(c2, bgcolor,fgcolor,x, y);
 
+}
+
+void monitor_setBG(){
+    __asm volatile("movb $0x6, %ah;"
+                    "xorb %al, %al;"
+                    "xorw %cx, %cx;"
+                    "movw $0x184F, %dx;"
+                    "movb $0x1E,%bh;"
+                    "int $0x10");
 }
