@@ -32,16 +32,16 @@ mboot:
 
 [GLOBAL start]                  ; Kernel entry point.
 [EXTERN cmain]
-[EXTERN cmain2]                   ; This is the entry point of our C code
+[EXTERN cmain2]                 ; This is the entry point of our C code
 
 start:
     ; Load multiboot information:
     push    ebx
 
     ; Execute the kernel:
+    ;call cmain
     cli                         ; Disable interrupts.
-    call cmain
-    call cmain2                   ; call our main() function.
+    call cmain2                 ; call our main() function.
     jmp $                       ; Enter an infinite loop, to stop the processor
                                 ; executing whatever rubbish is in the memory
                                 ; after our kernel!

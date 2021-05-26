@@ -6,7 +6,7 @@
 #include "descriptor_tables.h"
 #include "multiboot.h"
 #include "colors.h"
-
+#include "misc.h"
 
 int cmain(struct multiboot *mboot_ptr)
 {
@@ -59,9 +59,12 @@ int cmain2(struct multiboot *mboot_ptr)
     pos.y=2;
     monitor_write("\nType in 'help' for a list of commands, and 'about'\nfor version info.\n\n", Color.bgcolor, Color.fgcolor, pos.x, pos.y);
     
+    //char inp;
+    //inp = get_char_ascii();
+
     // execute some asm statements (instructiosns)
-    __asm volatile("int $0x3");
-    __asm volatile("int $0x4");
+    //__asm volatile("int $0x3");
+    //__asm volatile("int $0x4");
 
     return 0;
 }
